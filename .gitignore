@@ -1,2 +1,5 @@
 /ChainLoader/bin
 /ChainLoader/obj
+/ChainLoader/BuildAssets/HxD.ini
+/ChainLoader/BuildAssets/HxD.exe
+.vs
