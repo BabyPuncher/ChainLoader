@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChainLoader
 {
@@ -37,8 +35,11 @@ namespace ChainLoader
             catch (Exception)
             {
                 Console.WriteLine("Bad or nonexistent config.ini\n"
-                                    +"config.ini needs \"Target\" key pointing to the .exe you want to load.\n"
-                                    +"Press any key to continue...");
+                                    + "config.ini needs \"Target\" key pointing to the .exe you want to load.\n"
+                                    + "Place make sure ChainLoader.ini is in the working directory.\n"
+                                    + "Current working directory: " + Directory.GetCurrentDirectory() + "\n"
+                                    + "Press any key to continue...");
+                Console.ReadKey();
             }
         }
     }
