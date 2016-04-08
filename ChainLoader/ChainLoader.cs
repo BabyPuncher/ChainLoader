@@ -3,11 +3,15 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
-namespace ChainLoader
+namespace BabyPuncher.ChainLoader
 {
     class ChainLoader
     {
-        static void Main(string[] args)
+        private static readonly string iniFileName = "ChainLoader.ini";
+        private static readonly string iniSectionName = "ChainLoader";
+        private static readonly string iniTargetKeyName = "Target";
+
+        public static void Main(string[] args)
         {
             if (args.Count() > 0)
             {
@@ -25,14 +29,16 @@ namespace ChainLoader
 
             try
             {
-                target = GetTarget();
+                target = getTarget();
                 Console.WriteLine("Executing \"" + target + "\"");
                 System.Diagnostics.Process.Start(target);
             }
-            catch (MissingFieldException)
+            catch (InvalidDataException)
             {
                 Console.WriteLine("Bad or nonexistent config.ini\n"
-                                    + "config.ini needs \"Target\" key pointing to the .exe you want to load.\n"
+                                    + "config.ini needs \""
+                                    + iniTargetKeyName 
+                                    + "\" key pointing to the .exe you want to load.\n"
                                     + "Press any key to continue...");
                 Console.ReadKey();
             }
@@ -46,18 +52,18 @@ namespace ChainLoader
             }
         }
 
-        private static string GetTarget()
+        private static string getTarget()
         {
             var assemblyDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
-            var iniFile = (File.Exists("ChainLoader.ini"))
-                ? new IniFile("ChainLoader.ini") : new IniFile(assemblyDirectory + "\\ChainLoader.ini");
+            var iniFile = (File.Exists(iniFileName))
+                ? new IniFile(iniFileName) : new IniFile(assemblyDirectory + "\\" + iniFileName);
 
-            var target = iniFile.Read("Target", "ChainLoader");
+            var target = iniFile.Read(iniTargetKeyName, iniSectionName);
 
             if (String.IsNullOrEmpty(target))
             {
-                throw new MissingFieldException("Key 'Target' not found");
+                throw new InvalidDataException("Key " + iniTargetKeyName + " not found");
             }
 
             return target;

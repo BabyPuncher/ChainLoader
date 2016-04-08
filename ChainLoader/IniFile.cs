@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ChainLoader
+namespace BabyPuncher.ChainLoader
 {
     public class IniFile 
     {
@@ -16,15 +16,15 @@ namespace ChainLoader
         [DllImport("kernel32")]
         static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
 
-        public IniFile(string IniPath = null)
+        public IniFile(string _iniPath = null)
         {
-            Path = new FileInfo(IniPath ?? ExecutingAssembly + ".ini").FullName.ToString();
+            Path = new FileInfo(_iniPath ?? ExecutingAssembly + ".ini").FullName.ToString();
         }
 
-        public string Read(string Key, string Section = null)
+        public string Read(string _key, string _section = null)
         {
             var keyValue = new StringBuilder(255);
-            GetPrivateProfileString(Section ?? ExecutingAssembly, Key, "", keyValue, 255, Path);
+            GetPrivateProfileString(_section ?? ExecutingAssembly, _key, "", keyValue, 255, Path);
             return keyValue.ToString();
         }
 
