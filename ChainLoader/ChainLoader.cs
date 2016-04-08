@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -20,9 +21,11 @@ namespace ChainLoader
                 Console.WriteLine("\n(ignoring)");
             }
 
+            string target = String.Empty;
+
             try
             {
-                var target = GetTarget();
+                target = GetTarget();
                 Console.WriteLine("Executing \"" + target + "\"");
                 System.Diagnostics.Process.Start(target);
             }
@@ -31,6 +34,14 @@ namespace ChainLoader
                 Console.WriteLine("Bad or nonexistent config.ini\n"
                                     + "config.ini needs \"Target\" key pointing to the .exe you want to load.\n"
                                     + "Press any key to continue...");
+                Console.ReadKey();
+            }
+            catch (Win32Exception e)
+            {
+                Console.WriteLine(e.Message
+                                    + ": "
+                                    + target
+                                    + "\nPress any key to continue...");
                 Console.ReadKey();
             }
         }
