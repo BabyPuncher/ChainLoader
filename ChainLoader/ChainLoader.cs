@@ -22,25 +22,34 @@ namespace ChainLoader
 
             try
             {
-                var iniFile = new IniFile("ChainLoader.ini");
-                var target = iniFile.Read("Target", "ChainLoader");
-
-                if (String.IsNullOrEmpty(target))
-                {
-                    throw new MissingFieldException("Key 'target' not found");
-                }
+                var target = GetTarget();
                 Console.WriteLine("Executing \"" + target + "\"");
                 System.Diagnostics.Process.Start(target);
             }
-            catch (Exception)
+            catch (MissingFieldException)
             {
                 Console.WriteLine("Bad or nonexistent config.ini\n"
                                     + "config.ini needs \"Target\" key pointing to the .exe you want to load.\n"
-                                    + "Place make sure ChainLoader.ini is in the working directory.\n"
-                                    + "Current working directory: " + Directory.GetCurrentDirectory() + "\n"
                                     + "Press any key to continue...");
                 Console.ReadKey();
             }
+        }
+
+        private static string GetTarget()
+        {
+            var assemblyDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            var iniFile = (File.Exists("ChainLoader.ini"))
+                ? new IniFile("ChainLoader.ini") : new IniFile(assemblyDirectory + "\\ChainLoader.ini");
+
+            var target = iniFile.Read("Target", "ChainLoader");
+
+            if (String.IsNullOrEmpty(target))
+            {
+                throw new MissingFieldException("Key 'Target' not found");
+            }
+
+            return target;
         }
     }
 }
